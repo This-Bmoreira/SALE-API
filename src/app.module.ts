@@ -16,7 +16,7 @@ import { AppService } from './app.service';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [`${__dirname}/**/*.entities{.js, .ts}`],
+      entities: [`${__dirname}/**/*.entity{.js, .ts}`],
       synchronize: process.env.NODE_ENV === 'development',
     }),
   ],
