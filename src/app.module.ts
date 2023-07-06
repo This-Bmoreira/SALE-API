@@ -3,15 +3,17 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { CityModule } from './city/city.module';
 import { StateModule } from './state/state.module';
 import { UserModule } from './user/user.module';
-import { CityModule } from './city/city.module';
+import { AddressModule } from './address/address.module';
 
 @Module({
   imports: [
     UserModule,
     StateModule,
     CityModule,
+    AddressModule,
     ConfigModule.forRoot({
       envFilePath: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
     }),
