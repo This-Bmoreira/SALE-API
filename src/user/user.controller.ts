@@ -1,9 +1,16 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { CreateUserDTO } from './DTO/create-user.dto';
 import { ReturnUserDTO } from './DTO/return-user.dto';
 import { UserEntity } from './entity/user.entity';
 import { UserService } from './user.service';
-
+@UsePipes(ValidationPipe)
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}

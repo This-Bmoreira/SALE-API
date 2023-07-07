@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UsePipes, ValidationPipe } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { CreateUserDTO } from './DTO/create-user.dto';
 import { UserEntity } from './entity/user.entity';
-
+@UsePipes(ValidationPipe)
 @Injectable()
 export class UserService {
   constructor(
