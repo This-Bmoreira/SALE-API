@@ -2,16 +2,18 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { AddressEntity } from '../../address/entity/address.entity';
 
 @Entity({
   name: 'user',
 })
 export class UserEntity {
   @PrimaryGeneratedColumn('rowid')
-  id: number;
+  id?: number;
 
   @Column({ name: 'name', nullable: false })
   name: string;
@@ -26,14 +28,17 @@ export class UserEntity {
   typeUser: number;
 
   @Column({ name: 'phone' })
-  phone: string;
+  phone?: string;
 
   @Column({ name: 'password', nullable: false })
   password: string;
 
   @CreateDateColumn({ name: 'created_at' })
-  created_at: Date;
+  created_at?: Date;
 
   @UpdateDateColumn({ name: 'updated_at' })
-  updated_at: Date;
+  updated_at?: Date;
+
+  @OneToMany(() => AddressEntity, (address) => address.user)
+  addresses?: AddressEntity[];
 }
