@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UsePipes,
@@ -17,6 +18,14 @@ export class UserService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
   async createUser(createUser: CreateUserDTO): Promise<UserEntity> {
+    const { email } = createUser;
+
+    const user = this.findUserByEmail(email).catch(() => undefined);
+
+    if (user) {
+      throw new BadRequestException('Email registered in system');
+    }
+
     const saltOrRounds = 10;
     const { password } = createUser;
     const hash = await bcrypt.hash(password, saltOrRounds);
