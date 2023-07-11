@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -24,6 +25,7 @@ describe('AddressService', () => {
           provide: getRepositoryToken(AddressEntity),
           useValue: {
             save: jest.fn().mockResolvedValue(addressMock),
+            find: jest.fn().mockResolvedValue(addressMock),
           },
         },
         {
@@ -80,6 +82,21 @@ describe('AddressService', () => {
       await expect(
         addressService.createAddress(createAddressDTOMock, id),
       ).rejects.toThrowError();
+    });
+  });
+
+  describe('Read Address', () => {
+    it('should get an address when calling getAddressById', async () => {
+      const { id } = userEntityMock;
+      const result = await addressService.getAddressById(id);
+      expect(result).toEqual(addressMock);
+    });
+    it('should return error if the address is not found or empty', async () => {
+      jest
+        .spyOn(addressRepository, 'find')
+        .mockRejectedValueOnce(NotFoundException);
+      const { id } = userEntityMock;
+      await expect(addressService.getAddressById(id)).rejects.toThrowError();
     });
   });
 });
