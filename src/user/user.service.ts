@@ -20,8 +20,7 @@ export class UserService {
   async createUser(createUser: CreateUserDTO): Promise<UserEntity> {
     const { email } = createUser;
 
-    const user = this.findUserByEmail(email).catch(() => undefined);
-
+    const user = await this.findUserByEmail(email).catch(() => undefined);
     if (user) {
       throw new BadRequestException('Email registered in system');
     }
@@ -66,7 +65,7 @@ export class UserService {
         email,
       },
     });
-    console.log(user);
+   
 
     if (!user) {
       throw new NotFoundException('Email not Found');
