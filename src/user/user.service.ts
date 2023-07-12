@@ -65,8 +65,6 @@ export class UserService {
         email,
       },
     });
-   
-
     if (!user) {
       throw new NotFoundException('Email not Found');
     }
