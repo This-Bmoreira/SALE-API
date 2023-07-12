@@ -98,5 +98,10 @@ describe('UserService', () => {
       const result = userService.createUser(createUserMock);
       expect(result).rejects.toThrow(BadRequestException);
     });
+    it('should create a new user when calling createAndSaveUser', async () => {
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(undefined);
+      const result = await userService.createUser(createUserMock);
+      expect(result).toBe(userEntityMock);
+    });
   });
 });
