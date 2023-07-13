@@ -6,9 +6,10 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
+import { createPasswordHashed, validatePassword } from '../utils/password';
 import { CreateUserDTO } from './DTO/create-user.dto';
+import { UpdatePassWordDTO } from './DTO/update-password.dto';
 import { UserEntity } from './entity/user.entity';
 import { UserType } from './enum/user-type.enum';
 @UsePipes(ValidationPipe)
@@ -26,9 +27,8 @@ export class UserService {
       throw new BadRequestException('Email registered in system');
     }
 
-    const saltOrRounds = 10;
     const { password } = createUser;
-    const hash = await bcrypt.hash(password, saltOrRounds);
+    const hash = await createPasswordHashed(password);
 
     return this.userRepository.save({
       ...createUser,
@@ -70,5 +70,26 @@ export class UserService {
       throw new NotFoundException('Email not Found');
     }
     return user;
+  }
+  async updatePassWord(
+    updatePassWordUser: UpdatePassWordDTO,
+    id: number,
+  ): Promise<UserEntity> {
+    const user = await this.getUserById(id);
+    const { password } = user;
+    const { newPassWord, lastPassWord } = updatePassWordUser;
+
+    const hash = await createPasswordHashed(newPassWord);
+
+    const isMatch = await validatePassword(lastPassWord, password);
+
+    if (!isMatch) {
+      throw new BadRequestException('last password invalid');
+    }
+
+    return this.userRepository.save({
+      ...user,
+      password: hash,
+    });
   }
 }
