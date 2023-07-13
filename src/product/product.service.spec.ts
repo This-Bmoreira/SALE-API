@@ -6,6 +6,7 @@ import { categoryMock } from '../category/__mocks__/category.mock';
 import { CategoryService } from '../category/category.service';
 import { createProductMock } from './__mocks__/create-product.mock';
 import { productMock } from './__mocks__/product.mock';
+import { returnDeleteMock } from './__mocks__/return-delete.mock';
 import { ProductEntity } from './entity/product.entity';
 import { ProductService } from './product.service';
 
@@ -23,6 +24,8 @@ describe('ProductService', () => {
           useValue: {
             find: jest.fn(),
             save: jest.fn(),
+            delete: jest.fn(),
+            findOne: jest.fn(),
           },
         },
         {
@@ -63,6 +66,20 @@ describe('ProductService', () => {
       jest.spyOn(productRepository, 'find').mockRejectedValue(new Error());
       await expect(productService.getAllProduct()).rejects.toThrow();
     });
+    it('should return the product when a valid id is provided', async () => {
+      jest.spyOn(productRepository, 'findOne').mockResolvedValue(productMock);
+      const { id } = productMock;
+      const result = await productService.findProductById(id);
+      expect(result).toBe(productMock);
+    });
+
+    it('should throw a NotFoundException when an invalid id is provided', async () => {
+      jest.spyOn(productRepository, 'findOne').mockResolvedValue(undefined);
+      const { id } = productMock;
+      await expect(productService.findProductById(id)).rejects.toThrowError(
+        NotFoundException,
+      );
+    });
   });
 
   describe('create Product', () => {
@@ -81,6 +98,21 @@ describe('ProductService', () => {
       await expect(
         productService.createProduct(createProductMock),
       ).rejects.toThrow();
+    });
+  });
+
+  describe('Delete Product', () => {
+    it('should successfully delete the product from the database', async () => {
+      jest
+        .spyOn(productService, 'findProductById')
+        .mockResolvedValue(productMock);
+      jest
+        .spyOn(productRepository, 'delete')
+        .mockResolvedValue(returnDeleteMock);
+
+      const { id } = productMock;
+      const result = await productService.deleteProduct(id);
+      expect(result).toEqual(returnDeleteMock);
     });
   });
 });
