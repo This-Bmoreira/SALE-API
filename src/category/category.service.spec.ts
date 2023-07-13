@@ -7,7 +7,7 @@ import { createCategoryMock } from './__mocks__/create-category.mock';
 import { CategoryService } from './category.service';
 import { CategoryEntity } from './entity/category.entity';
 
-describe('CityService', () => {
+describe('CategoryService', () => {
   let categoryService: CategoryService;
   let categoryRepository: Repository<CategoryEntity>;
 
@@ -68,6 +68,22 @@ describe('CityService', () => {
       const { name } = categoryMock;
       const result = categoryService.findCategoryByName(name);
       await expect(result).rejects.toThrowError(NotFoundException);
+    });
+    it('should throw a NotFoundException when no category is found by id', async () => {
+      jest.spyOn(categoryRepository, 'findOne').mockResolvedValue(undefined);
+      const { id } = categoryMock;
+      try {
+        await categoryService.findCategoryById(id);
+      } catch (error) {
+        expect(error).toBeInstanceOf(NotFoundException);
+      }
+    });
+
+    it('should return the category when found by id', async () => {
+      jest.spyOn(categoryRepository, 'findOne').mockResolvedValue(categoryMock);
+      const { id } = categoryMock;
+      const result = await categoryService.findCategoryById(id);
+      expect(result).toEqual(categoryMock);
     });
   });
 
