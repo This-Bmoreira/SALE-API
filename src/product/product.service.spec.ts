@@ -39,44 +39,48 @@ describe('ProductService', () => {
       getRepositoryToken(ProductEntity),
     );
   });
+
   it('should be defined', () => {
     expect(productService).toBeDefined();
     expect(productRepository).toBeDefined();
   });
 
   describe('read product', () => {
-    it('should return a list of product', async () => {
+    it('should return a list of products', async () => {
       jest.spyOn(productRepository, 'find').mockResolvedValue([productMock]);
       const result = await productService.getAllProduct();
       expect(result).toEqual([productMock]);
     });
 
-    it('should throw a NotFoundException when no product are found', async () => {
+    it('should throw a NotFoundException when no products are found', async () => {
       jest.spyOn(productRepository, 'find').mockResolvedValue([]);
-      const result = productService.getAllProduct();
-      await expect(result).rejects.toThrowError(NotFoundException);
+      await expect(productService.getAllProduct()).rejects.toThrowError(
+        NotFoundException,
+      );
     });
 
     it('should throw an error when an unexpected error occurs', async () => {
       jest.spyOn(productRepository, 'find').mockRejectedValue(new Error());
-      const result = productService.getAllProduct();
-      await expect(result).rejects.toThrow();
+      await expect(productService.getAllProduct()).rejects.toThrow();
     });
   });
+
   describe('create Product', () => {
-    it('should return a product when insert  bd', async () => {
+    it('should return a product when inserted into the database', async () => {
       jest.spyOn(productRepository, 'save').mockResolvedValue(productMock);
 
       const result = await productService.createProduct(createProductMock);
       expect(result).toEqual(productMock);
     });
-    it('should return a product when insert  bd', async () => {
+
+    it('should throw an error when an unexpected error occurs in finding the category', async () => {
       jest
         .spyOn(categoryService, 'findCategoryById')
         .mockRejectedValue(new Error());
 
-      const result = productService.createProduct(createProductMock);
-      expect(result).rejects.toThrow();
+      await expect(
+        productService.createProduct(createProductMock),
+      ).rejects.toThrow();
     });
   });
 });
