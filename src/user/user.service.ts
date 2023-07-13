@@ -10,6 +10,7 @@ import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { CreateUserDTO } from './DTO/create-user.dto';
 import { UserEntity } from './entity/user.entity';
+import { UserType } from './enum/user-type.enum';
 @UsePipes(ValidationPipe)
 @Injectable()
 export class UserService {
@@ -31,7 +32,7 @@ export class UserService {
 
     return this.userRepository.save({
       ...createUser,
-      typeUser: 1,
+      typeUser: UserType.User,
       password: hash,
     });
   }
