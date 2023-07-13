@@ -5,14 +5,14 @@ export class Migrate1688399112076 implements MigrationInterface {
     queryRunner.query(`
             INSERT INTO public."user"(
                 name, email, cpf, type_user, phone, password)
-                VALUES ('root', 'root@root.com', '362.974.820-12', 2, '90000-0000', '111111');
+                VALUES ('root', 'root@gmail.com', '36297482012', 2, '90000-0000', '$2b$10$aC8DJtG2BEE4ZaVMKHyivuqNBiJC5XYdlow6CQKe5UFR7prg7HpYi');
         `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     queryRunner.query(`
             DELETE FROM public."user"
-                WHERE email like 'root@root.com';
+                WHERE email like 'root@gmail.com';
         `);
   }
 }
