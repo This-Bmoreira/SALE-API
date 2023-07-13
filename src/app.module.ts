@@ -12,6 +12,7 @@ import { CityModule } from './city/city.module';
 import { RolesGuard } from './guard/roles.guard';
 import { StateModule } from './state/state.module';
 import { UserModule } from './user/user.module';
+import { productModule } from './product/product.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { UserModule } from './user/user.module';
     AddressModule,
     AuthModule,
     JwtModule,
+    productModule,
     CategoryModule,
     ConfigModule.forRoot({
       envFilePath: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
