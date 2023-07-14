@@ -8,11 +8,13 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+import { Roles } from '../decorator/roles.decorator';
 import { UserId } from '../decorator/user-id.decorator';
 import { CreateUserDTO } from './DTO/create-user.dto';
 import { ReturnUserDTO } from './DTO/return-user.dto';
 import { UpdatePassWordDTO } from './DTO/update-password.dto';
 import { UserEntity } from './entity/user.entity';
+import { UserType } from './enum/user-type.enum';
 import { UserService } from './user.service';
 @UsePipes(ValidationPipe)
 @Controller('user')
@@ -23,6 +25,7 @@ export class UserController {
   async createUser(@Body() createUser: CreateUserDTO): Promise<UserEntity> {
     return this.userService.createUser(createUser);
   }
+  @Roles(UserType.Admin)
   @Get()
   async getAllUser(): Promise<ReturnUserDTO[]> {
     return (await this.userService.getAllUser()).map(
@@ -37,7 +40,7 @@ export class UserController {
       await this.userService.getUserByIdUsingRelations(id),
     );
   }
-
+  @Roles(UserType.Admin, UserType.User)
   @Patch()
   @UsePipes(ValidationPipe)
   async updatePasswordUser(
