@@ -7,12 +7,13 @@ import { AddressModule } from './address/address.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { CartModule } from './cart/cart.module';
 import { CategoryModule } from './category/category.module';
 import { CityModule } from './city/city.module';
 import { RolesGuard } from './guard/roles.guard';
+import { productModule } from './product/product.module';
 import { StateModule } from './state/state.module';
 import { UserModule } from './user/user.module';
-import { productModule } from './product/product.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { productModule } from './product/product.module';
     AuthModule,
     JwtModule,
     productModule,
+    CartModule,
     CategoryModule,
     ConfigModule.forRoot({
       envFilePath: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
