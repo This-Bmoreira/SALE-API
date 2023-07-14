@@ -3,6 +3,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { createUserMock } from './__mocks__/create-user.mock';
+import {
+  updatePassWordInvalidMock,
+  updatePassWordMock,
+} from './__mocks__/update-user.mock';
 import { userEntityMock } from './__mocks__/user-entity.mock';
 import { UserEntity } from './entity/user.entity';
 import { UserService } from './user.service';
@@ -102,6 +106,31 @@ describe('UserService', () => {
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(undefined);
       const result = await userService.createUser(createUserMock);
       expect(result).toBe(userEntityMock);
+    });
+  });
+  describe('update password', () => {
+    it('should update the password if the user exists and the last password is valid', async () => {
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(userEntityMock);
+      jest.spyOn(userRepository, 'save').mockResolvedValue(userEntityMock);
+      const { id } = userEntityMock;
+      const result = await userService.updatePassWord(updatePassWordMock, id);
+      expect(result).toBe(userEntityMock);
+    });
+
+    it('should throw an error if the last password is invalid', async () => {
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(userEntityMock);
+      jest.spyOn(userRepository, 'save').mockResolvedValue(userEntityMock);
+      const { id } = userEntityMock;
+      const result = userService.updatePassWord(updatePassWordInvalidMock, id);
+      expect(result).rejects.toThrowError(BadRequestException);
+    });
+
+    it('should throw an error if the user does not exist', async () => {
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(undefined);
+      jest.spyOn(userRepository, 'save').mockResolvedValue(userEntityMock);
+      const { id } = userEntityMock;
+      const result = userService.updatePassWord(updatePassWordMock, id);
+      expect(result).rejects.toThrowError(NotFoundException);
     });
   });
 });
