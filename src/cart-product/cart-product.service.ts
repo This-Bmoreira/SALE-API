@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { InsertCartDTO } from '../cart/DTO/insert-cart.dto';
 import { CartEntity } from '../cart/entity/cart.entity';
+import { ProductService } from '../product/product.service';
 import { CartProductEntity } from './entity/cart-product.entity';
 
 @Injectable()
@@ -10,6 +11,7 @@ export class CartProductService {
   constructor(
     @InjectRepository(CartProductEntity)
     private readonly cartProductRepository: Repository<CartProductEntity>,
+    private readonly productService: ProductService,
   ) {}
 
   async verifyProductInCart(
@@ -45,6 +47,7 @@ export class CartProductService {
     insertCartDTO: InsertCartDTO,
     cart: CartEntity,
   ): Promise<CartProductEntity> {
+    await this.productService.findProductById(insertCartDTO.productId);
     const cartProduct = await this.verifyProductInCart(
       insertCartDTO.productId,
       cart.id,
