@@ -7,8 +7,8 @@ import {
 } from '@nestjs/common';
 import { UserId } from '../decorator/user-id.decorator';
 import { InsertCartDTO } from './DTO/insert-cart.dto';
+import { ReturnCartDTO } from './DTO/return-cart.dto';
 import { CartService } from './cart.service';
-import { CartEntity } from './entity/cart.entity';
 
 @Controller('cart')
 export class CartController {
@@ -19,7 +19,9 @@ export class CartController {
   async createCart(
     @Body() insertCart: InsertCartDTO,
     @UserId() userId: number,
-  ): Promise<CartEntity> {
-    return this.cartService.insertProductInCart(insertCart, userId);
+  ): Promise<ReturnCartDTO> {
+    return new ReturnCartDTO(
+      await this.cartService.insertProductInCart(insertCart, userId),
+    );
   }
 }
