@@ -3,10 +3,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CartProductService } from '../cart-product/cart-product.service';
+import { productMock } from '../product/__mocks__/product.mock';
 import { returnDeleteMock } from '../product/__mocks__/return-delete.mock';
 import { userEntityMock } from '../user/__mocks__/user-entity.mock';
 import { cartMock } from './__mocks__/cart.mock';
 import { insertCartMock } from './__mocks__/inset-cart.mock';
+import { updateCartMock } from './__mocks__/update-cart.mock';
 import { CartService } from './cart.service';
 import { CartEntity } from './entity/cart.entity';
 
@@ -148,6 +150,60 @@ describe('ProductService', () => {
       expect(result).toEqual(cartMock);
       expect(spy.mock.calls.length).toEqual(0);
       expect(spyCartProductService.mock.calls.length).toEqual(1);
+    });
+  });
+
+  describe('deleteProductCart Method', () => {
+    it('should return DeleteResult ', async () => {
+      const spy = jest.spyOn(cartProductService, 'deleteProductCart');
+
+      const { id: userId } = userEntityMock;
+      const { id: productId } = productMock;
+      const result = await cartService.deleteProductCart(productId, userId);
+
+      expect(result).toEqual(returnDeleteMock);
+      expect(spy.mock.calls.length).toEqual(1);
+    });
+
+    it('should return cart found', async () => {
+      jest.spyOn(cartRepository, 'findOne').mockResolvedValue(undefined);
+      const syp = jest.spyOn(cartProductService, 'deleteProductCart');
+
+      const { id: userId } = userEntityMock;
+      const { id: productId } = productMock;
+      const result = cartService.deleteProductCart(productId, userId);
+
+      expect(result).rejects.toThrowError(NotFoundException);
+      expect(syp.mock.calls.length).toEqual(0);
+    });
+  });
+
+  describe('updateProductInCart Method', () => {
+    it('should return cart in updateProductInCart', async () => {
+      const spyCartProductService = jest.spyOn(
+        cartProductService,
+        'updateProductInCart',
+      );
+      const spySave = jest.spyOn(cartRepository, 'save');
+
+      const { id } = userEntityMock;
+
+      const result = await cartService.updateProductInCart(updateCartMock, id);
+
+      expect(result).toEqual(cartMock);
+      expect(spyCartProductService.mock.calls.length).toEqual(1);
+      expect(spySave.mock.calls.length).toEqual(0);
+    });
+
+    it('should return cart in createCart', async () => {
+      jest.spyOn(cartRepository, 'findOne').mockRejectedValue(undefined);
+      const spySave = jest.spyOn(cartRepository, 'save');
+      const { id } = userEntityMock;
+
+      const result = await cartService.updateProductInCart(updateCartMock, id);
+
+      expect(result).toEqual(cartMock);
+      expect(spySave.mock.calls.length).toEqual(1);
     });
   });
 });
