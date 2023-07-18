@@ -2,11 +2,11 @@ import { ReturnAddressDTO } from '../../address/DTO/return-address.dto';
 import { UserEntity } from '../entity/user.entity';
 
 export class ReturnUserDTO {
-  id: number;
+  id?: number;
   name: string;
   email: string;
   cpf: string;
-  phone: string;
+  phone?: string;
   address?: ReturnAddressDTO[];
 
   constructor(userEntity: UserEntity) {
