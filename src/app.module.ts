@@ -14,6 +14,7 @@ import { RolesGuard } from './guard/roles.guard';
 import { productModule } from './product/product.module';
 import { StateModule } from './state/state.module';
 import { UserModule } from './user/user.module';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { UserModule } from './user/user.module';
     productModule,
     CartModule,
     CategoryModule,
+    OrderModule,
     ConfigModule.forRoot({
       envFilePath: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
     }),

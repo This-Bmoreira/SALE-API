@@ -3,11 +3,13 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { CityEntity } from '../../city/entity/city.entity';
+import { OrderEntity } from '../../order/entity/order.entity';
 import { UserEntity } from '../../user/entity/user.entity';
 
 @Entity({
@@ -45,4 +47,7 @@ export class AddressEntity {
   @ManyToOne(() => CityEntity, (city) => city.addresses)
   @JoinColumn({ name: 'city_id', referencedColumnName: 'id' })
   city?: CityEntity;
+
+  @ManyToMany(() => OrderEntity, (order) => order.address)
+  orders?: OrderEntity[];
 }
