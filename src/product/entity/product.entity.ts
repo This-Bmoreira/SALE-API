@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -10,6 +11,7 @@ import {
 } from 'typeorm';
 import { CartProductEntity } from '../../cart-product/entity/cart-product.entity';
 import { CategoryEntity } from '../../category/entity/category.entity';
+import { OrderProductEntity } from '../../order-product/entity/order-product.entity';
 
 @Entity({ name: 'product' })
 export class ProductEntity {
@@ -43,4 +45,6 @@ export class ProductEntity {
   )
   @JoinColumn({ name: 'category_id', referencedColumnName: 'id' })
   category?: CategoryEntity;
+  @ManyToMany(() => OrderProductEntity, (orderProduct) => orderProduct.product)
+  ordersProduct?: OrderProductEntity[];
 }
