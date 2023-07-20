@@ -16,6 +16,7 @@ import { StateModule } from './state/state.module';
 import { UserModule } from './user/user.module';
 import { OrderModule } from './order/order.module';
 import { PaymentModule } from './payment/payment.module';
+import { OrderProductModule } from './order-product/order-product.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { PaymentModule } from './payment/payment.module';
       synchronize: process.env.NODE_ENV === 'development',
     }),
     PaymentModule,
+    OrderProductModule,
   ],
   controllers: [AppController],
   providers: [
