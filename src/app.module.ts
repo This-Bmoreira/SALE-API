@@ -15,6 +15,7 @@ import { productModule } from './product/product.module';
 import { StateModule } from './state/state.module';
 import { UserModule } from './user/user.module';
 import { OrderModule } from './order/order.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { OrderModule } from './order/order.module';
       entities: [`${__dirname}/**/*.entity{.js, .ts}`],
       synchronize: process.env.NODE_ENV === 'development',
     }),
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [
