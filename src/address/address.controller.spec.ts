@@ -45,12 +45,13 @@ describe('addressController', () => {
 
   describe('createAddress Method', () => {
     it('should address Entity in createAddress', async () => {
-      const { complement, cep, numberAddress } = addressMock;
-      const { id } = userEntityMock;
-      const address = await addressController.getAddressById(id);
+      const { complement, cep, numberAddress, id } = addressMock;
+      const { id: userId } = userEntityMock;
+      const address = await addressController.getAddressById(userId);
 
       expect(address).toEqual([
         {
+          id,
           complement,
           numberAddress,
           cep,
