@@ -2,6 +2,9 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { countProductMock } from '../product/__mocks__/count-product.mock';
+import { ProductService } from '../product/product.service';
+import { ReturnCategory } from './DTO/return-category.dto';
 import { categoryMock } from './__mocks__/category.mock';
 import { createCategoryMock } from './__mocks__/create-category.mock';
 import { CategoryService } from './category.service';
@@ -10,11 +13,20 @@ import { CategoryEntity } from './entity/category.entity';
 describe('CategoryService', () => {
   let categoryService: CategoryService;
   let categoryRepository: Repository<CategoryEntity>;
+  let productService: ProductService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CategoryService,
+        {
+          provide: ProductService,
+          useValue: {
+            countProductByCategoryId: jest
+              .fn()
+              .mockResolvedValue([countProductMock]),
+          },
+        },
         {
           provide: getRepositoryToken(CategoryEntity),
           useValue: {
@@ -27,6 +39,7 @@ describe('CategoryService', () => {
     }).compile();
 
     categoryService = module.get<CategoryService>(CategoryService);
+    productService = module.get<ProductService>(ProductService);
     categoryRepository = module.get<Repository<CategoryEntity>>(
       getRepositoryToken(CategoryEntity),
     );
@@ -35,13 +48,16 @@ describe('CategoryService', () => {
   it('should be defined', () => {
     expect(categoryRepository).toBeDefined();
     expect(categoryService).toBeDefined();
+    expect(productService).toBeDefined();
   });
 
   describe('read categories', () => {
     it('should return a list of categories', async () => {
       jest.spyOn(categoryRepository, 'find').mockResolvedValue([categoryMock]);
-      const categories = await categoryService.getAllCategories();
-      expect(categories).toEqual([categoryMock]);
+      const [categories] = await categoryService.getAllCategories();
+      expect(categories).toEqual(
+        new ReturnCategory(categoryMock, countProductMock.total),
+      );
     });
 
     it('should throw a NotFoundException when no categories are found', async () => {
