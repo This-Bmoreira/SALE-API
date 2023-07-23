@@ -14,7 +14,10 @@ export class ProductService {
     private readonly categoryService: CategoryService,
   ) {}
 
-  async getAllProduct(productId?: number[]): Promise<ProductEntity[]> {
+  async getAllProduct(
+    productId?: number[],
+    isFindRelations?: boolean,
+  ): Promise<ProductEntity[]> {
     let findOptions = {};
 
     if (productId && productId.length > 0) {
@@ -25,6 +28,14 @@ export class ProductService {
       };
     }
 
+    if (isFindRelations) {
+      findOptions = {
+        ...findOptions,
+        relations: {
+          category: true,
+        },
+      };
+    }
     const product = await this.productRepository.find(findOptions);
     if (!product || product.length === 0) {
       throw new NotFoundException('Not Found products');
