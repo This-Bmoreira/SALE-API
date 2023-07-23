@@ -28,8 +28,6 @@ export class CategoryController {
   @Roles(UserType.Admin, UserType.User)
   @Get()
   async findAllCategories(): Promise<ReturnCategory[]> {
-    return (await this.categoryService.getAllCategories()).map(
-      (category) => new ReturnCategory(category),
-    );
+    return this.categoryService.getAllCategories();
   }
 }
