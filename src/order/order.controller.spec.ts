@@ -56,9 +56,26 @@ describe('OrderController', () => {
         {
           id: orderMock.id,
           date: orderMock.date.toString(),
+          paymentId: orderMock.paymentId,
+          userId: orderMock.userId,
+          addressId: orderMock.addressId,
         },
       ]);
       expect(spy.mock.calls.length).toEqual(1);
+    });
+  });
+  describe('findOrderById method', () => {
+    it('should return order', async () => {
+      const result = await orderController.findOrderById(orderMock.id);
+      expect(result).toEqual([
+        {
+          id: orderMock.id,
+          date: orderMock.date.toString(),
+          paymentId: orderMock.paymentId,
+          userId: orderMock.userId,
+          addressId: orderMock.addressId,
+        },
+      ]);
     });
   });
 });
