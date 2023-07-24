@@ -17,6 +17,7 @@ describe('OrderController', () => {
           useValue: {
             createOrder: jest.fn().mockReturnValue(orderMock),
             findOrderByUserId: jest.fn().mockResolvedValue([orderMock]),
+            findAllOrder: jest.fn().mockResolvedValue([orderMock]),
           },
         },
       ],
@@ -45,6 +46,19 @@ describe('OrderController', () => {
     it('should return order', async () => {
       const result = await orderController.findOrderByUserId(userEntityMock.id);
       expect(result).toEqual([orderMock]);
+    });
+  });
+  describe('findAllOrder method', () => {
+    it('should return order', async () => {
+      const spy = jest.spyOn(orderService, 'findAllOrder');
+      const result = await orderController.findAllOrder();
+      expect(result).toEqual([
+        {
+          id: orderMock.id,
+          date: orderMock.date.toString(),
+        },
+      ]);
+      expect(spy.mock.calls.length).toEqual(1);
     });
   });
 });
