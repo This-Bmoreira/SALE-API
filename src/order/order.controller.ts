@@ -6,11 +6,15 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+import { Roles } from '../decorator/roles.decorator';
 import { UserId } from '../decorator/user-id.decorator';
+import { UserType } from '../user/enum/user-type.enum';
 import { CreateOrderDTO } from './DTO/create-order.dto';
-import { OrderService } from './order.service';
+import { ReturnOrderDTO } from './DTO/return-order.dto';
 import { OrderEntity } from './entity/order.entity';
+import { OrderService } from './order.service';
 
+@Roles(UserType.Admin, UserType.User)
 @Controller('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
@@ -26,5 +30,12 @@ export class OrderController {
   @Get()
   async findOrderByUserId(@UserId() userId: number): Promise<OrderEntity[]> {
     return this.orderService.findOrderByUserId(userId);
+  }
+  @Roles(UserType.Admin)
+  @Get(':all')
+  async findAllOrder(): Promise<ReturnOrderDTO[]> {
+    return (await this.orderService.findAllOrder()).map(
+      (order) => new ReturnOrderDTO(order),
+    );
   }
 }
