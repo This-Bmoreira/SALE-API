@@ -28,6 +28,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@nestjs/axios": "^3.0.0",
     "@nestjs/cache-manager": "^2.0.1",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.0.0",
@@ -36,6 +37,7 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/swagger": "^7.1.1",
     "@nestjs/typeorm": "^10.0.0",
+    "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
     "cache-manager": "^5.2.3",
     "class-transformer": "^0.5.1",
