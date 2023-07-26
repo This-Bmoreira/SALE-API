@@ -13,6 +13,7 @@ import { DeleteResult } from 'typeorm';
 import { Roles } from '../decorator/roles.decorator';
 import { UserType } from '../user/enum/user-type.enum';
 import { CreateProductDTO } from './DTO/create-product.dto';
+import { ReturnPriceDeliveryDTO } from './DTO/return-price-delivery.dto';
 import { ReturnProduct } from './DTO/return-product.dto';
 import { UpdateProductDTO } from './DTO/update-product.dto';
 import { ProductEntity } from './entity/product.entity';
@@ -51,5 +52,13 @@ export class ProductController {
     @Body() updateProductDTO: UpdateProductDTO,
   ): Promise<ProductEntity> {
     return this.productService.updateProduct(updateProductDTO, id);
+  }
+
+  @Get('/:idProduct/delivery/:cep')
+  async findPriceDelivery(
+    @Param('idProduct') idProduct: number,
+    @Param('cep') cep: string,
+  ): Promise<ReturnPriceDeliveryDTO> {
+    return this.productService.findPriceDelivery(cep, idProduct);
   }
 }
