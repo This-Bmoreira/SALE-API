@@ -67,15 +67,13 @@ describe('OrderController', () => {
   describe('findOrderById method', () => {
     it('should return order', async () => {
       const result = await orderController.findOrderById(orderMock.id);
-      expect(result).toEqual([
-        {
-          id: orderMock.id,
-          date: orderMock.date.toString(),
-          paymentId: orderMock.paymentId,
-          userId: orderMock.userId,
-          addressId: orderMock.addressId,
-        },
-      ]);
+      expect(result).toEqual({
+        id: orderMock.id,
+        date: orderMock.date.toString(),
+        paymentId: orderMock.paymentId,
+        userId: orderMock.userId,
+        addressId: orderMock.addressId,
+      });
     });
   });
 });
