@@ -86,7 +86,11 @@ export class OrderService {
         id: orderId,
       },
       relations: {
-        address: true,
+        address: {
+          city: {
+            state: true,
+          },
+        },
         ordersProduct: {
           product: true,
         },
@@ -107,9 +111,27 @@ export class OrderService {
         user: true,
       },
     });
+
     if (!orders || orders.length === 0) {
       throw new NotFoundException('orders not found');
     }
-    return orders;
+    const ordersProduct =
+      await this.orderProductService.findAmountProductsByOrderId(
+        orders.map((order) => order.id),
+      );
+    return orders.map((order) => {
+      const orderProduct = ordersProduct.find(
+        (currentOrder) => currentOrder.order_id === order.id,
+      );
+      console.log('order', ordersProduct);
+      console.log(order.id);
+      if (orderProduct) {
+        return {
+          ...order,
+          amountProducts: Number(orderProduct.total),
+        };
+      }
+      return order;
+    });
   }
 }

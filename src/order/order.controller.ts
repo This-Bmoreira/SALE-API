@@ -43,9 +43,9 @@ export class OrderController {
   @Get(':orderId')
   async findOrderById(
     @Param('orderId') orderId: number,
-  ): Promise<ReturnOrderDTO[]> {
-    return (await this.orderService.findOrderByUserId(undefined, orderId)).map(
-      (order) => new ReturnOrderDTO(order),
+  ): Promise<ReturnOrderDTO> {
+    return new ReturnOrderDTO(
+      (await this.orderService.findOrderByUserId(undefined, orderId))[0],
     );
   }
 }
