@@ -9,11 +9,11 @@ export class SizeProductDTO {
   productValue: number;
 
   constructor(product: ProductEntity) {
-    this.weight = 15;
-    this.length = 20;
-    this.height = 20;
-    this.width = 20;
-    this.diameter = 20;
+    this.weight = product.weight;
+    this.length = product.length;
+    this.height = product.height;
+    this.width = product.width;
+    this.diameter = product.diameter;
     this.productValue = product.price;
   }
 }
