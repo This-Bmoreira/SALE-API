@@ -19,7 +19,10 @@ export class UserService {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
   ) {}
-  async createUser(createUser: CreateUserDTO): Promise<UserEntity> {
+  async createUser(
+    createUser: CreateUserDTO,
+    userType?: number,
+  ): Promise<UserEntity> {
     const { email } = createUser;
 
     const user = await this.findUserByEmail(email).catch(() => undefined);
@@ -32,7 +35,7 @@ export class UserService {
 
     return this.userRepository.save({
       ...createUser,
-      typeUser: UserType.User,
+      typeUser: userType ? userType : UserType.User,
       password: hash,
     });
   }

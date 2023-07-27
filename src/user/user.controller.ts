@@ -21,11 +21,17 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Roles(UserType.Root)
+  @Post('admin')
+  async createAdmin(@Body() createUser: CreateUserDTO): Promise<UserEntity> {
+    return this.userService.createUser(createUser, UserType.Admin);
+  }
+
   @Post()
   async createUser(@Body() createUser: CreateUserDTO): Promise<UserEntity> {
     return this.userService.createUser(createUser);
   }
-  @Roles(UserType.Admin)
+  @Roles(UserType.Root, UserType.Admin)
   @Get(':all')
   async getAllUser(): Promise<ReturnUserDTO[]> {
     return (await this.userService.getAllUser()).map(
@@ -40,7 +46,7 @@ export class UserController {
       await this.userService.getUserByIdUsingRelations(id),
     );
   }
-  @Roles(UserType.Admin, UserType.User)
+  @Roles(UserType.Root, UserType.Admin, UserType.User)
   @Patch()
   @UsePipes(ValidationPipe)
   async updatePasswordUser(
@@ -49,7 +55,7 @@ export class UserController {
   ): Promise<UserEntity> {
     return this.userService.updatePassWord(updatePasswordDTO, userId);
   }
-  @Roles(UserType.Admin, UserType.User)
+  @Roles(UserType.Root, UserType.Admin, UserType.User)
   @Get()
   @UsePipes(ValidationPipe)
   async GetInfoUser(@UserId() userId): Promise<ReturnUserDTO> {
