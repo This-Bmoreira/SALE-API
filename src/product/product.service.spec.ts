@@ -57,6 +57,7 @@ describe('ProductService', () => {
   it('should be defined', () => {
     expect(productService).toBeDefined();
     expect(productRepository).toBeDefined();
+    expect(correiosService).toBeDefined();
   });
 
   describe('read product', () => {
@@ -105,9 +106,18 @@ describe('ProductService', () => {
     });
     it('should return the product when a valid id is provided', async () => {
       jest.spyOn(productRepository, 'findOne').mockResolvedValue(productMock);
+      const spy = jest.spyOn(productRepository, 'findOne');
       const { id } = productMock;
-      const result = await productService.findProductById(id);
+      const result = await productService.findProductById(id, true);
       expect(result).toBe(productMock);
+      expect(spy).toBeCalledWith({
+        where: {
+          id,
+        },
+        relations: {
+          category: true,
+        },
+      });
     });
 
     it('should throw a NotFoundException when an invalid id is provided', async () => {
