@@ -69,10 +69,21 @@ export class ProductService {
       diameter: createProduct.diameter || 0,
     });
   }
-  async findProductById(id: number): Promise<ProductEntity> {
+  async findProductById(
+    id: number,
+    isRelations?: boolean,
+  ): Promise<ProductEntity> {
+    const relations = isRelations
+      ? {
+          category: true,
+        }
+      : undefined;
     const product = await this.productRepository.findOne({
       where: {
         id,
+      },
+      relations: {
+        category: true,
       },
     });
     if (!product) {

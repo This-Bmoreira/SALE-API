@@ -7,11 +7,33 @@ export class ReturnProduct {
   price: number;
   image: string;
   category?: ReturnCategory;
-  constructor({ name, price, image, id, category }: ProductEntity) {
-    this.category = category ? new ReturnCategory(category) : undefined;
+  weight?: number;
+  height?: number;
+  width?: number;
+  length?: number;
+  diameter?: number;
+
+  constructor({
+    name,
+    price,
+    image,
+    id,
+    category,
+    weight,
+    height,
+    width,
+    length,
+    diameter,
+  }: ProductEntity) {
     this.id = id;
     this.name = name;
     this.price = price;
     this.image = image;
+    this.weight = weight;
+    this.height = height;
+    this.width = width;
+    this.length = length;
+    this.diameter = diameter;
+    this.category = category ? new ReturnCategory(category) : undefined;
   }
 }
