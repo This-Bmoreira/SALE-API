@@ -4,6 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { categoryMock } from '../category/__mocks__/category.mock';
 import { CategoryService } from '../category/category.service';
+import { CorreiosService } from '../correios/correios.service';
 import { createProductMock } from './__mocks__/create-product.mock';
 import { productMock } from './__mocks__/product.mock';
 import { returnDeleteMock } from './__mocks__/return-delete.mock';
@@ -15,6 +16,7 @@ describe('ProductService', () => {
   let productService: ProductService;
   let productRepository: Repository<ProductEntity>;
   let categoryService: CategoryService;
+  let correiosService: CorreiosService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -35,10 +37,18 @@ describe('ProductService', () => {
             findCategoryById: jest.fn().mockResolvedValue(categoryMock),
           },
         },
+        {
+          provide: CorreiosService,
+          useValue: {
+            priceDelivery: jest.fn().mockResolvedValue({}),
+          },
+        },
       ],
     }).compile();
+
     productService = module.get<ProductService>(ProductService);
     categoryService = module.get<CategoryService>(CategoryService);
+    correiosService = module.get<CorreiosService>(CorreiosService);
     productRepository = module.get<Repository<ProductEntity>>(
       getRepositoryToken(ProductEntity),
     );
