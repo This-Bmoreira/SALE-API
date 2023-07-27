@@ -18,7 +18,7 @@ export class AddressController {
   ): Promise<AddressEntity> {
     return this.addressService.createAddress(createAddressDTO, userId);
   }
-  @Roles(UserType.Admin, UserType.User)
+  @Roles(UserType.Root, UserType.Admin, UserType.User)
   @Get()
   async getAddressById(@UserId() userId: number): Promise<ReturnAddressDTO[]> {
     return (await this.addressService.getAddressById(userId)).map(
