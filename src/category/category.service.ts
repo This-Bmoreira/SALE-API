@@ -11,6 +11,7 @@ import { CountProduct } from '../product/DTO/count-product.dto';
 import { ProductService } from '../product/product.service';
 import { CreateCategory } from './DTO/create-category.dto';
 import { ReturnCategory } from './DTO/return-category.dto';
+import { UpdateCategory } from './DTO/update-category.dto';
 import { CategoryEntity } from './entity/category.entity';
 
 @Injectable()
@@ -103,5 +104,16 @@ export class CategoryService {
       throw new BadRequestException('Category with relations');
     }
     return this.categoryRepository.delete({ id: categoryId });
+  }
+  async editCategory(
+    categoryId: number,
+    updateCategory: UpdateCategory,
+  ): Promise<CategoryEntity> {
+    const category = await this.findCategoryById(categoryId, true);
+
+    return this.categoryRepository.save({
+      ...category,
+      ...updateCategory,
+    });
   }
 }
