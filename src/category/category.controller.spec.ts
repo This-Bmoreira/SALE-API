@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { returnDeleteMock } from '../product/__mocks__/return-delete.mock';
 import { categoryMock } from './__mocks__/category.mock';
 import { createCategoryMock } from './__mocks__/create-category.mock';
+import { updateCategoryMock } from './__mocks__/update-category.mock';
 import { CategoryController } from './category.controller';
 import { CategoryService } from './category.service';
 
@@ -18,6 +19,7 @@ describe('CategoryController', () => {
             getAllCategories: jest.fn().mockResolvedValue([categoryMock]),
             createCategory: jest.fn().mockResolvedValue(categoryMock),
             deleteCategory: jest.fn().mockResolvedValue(returnDeleteMock),
+            editCategory: jest.fn().mockResolvedValue(categoryMock),
           },
         },
       ],
@@ -59,6 +61,25 @@ describe('CategoryController', () => {
       const spy = jest.spyOn(categoryService, 'deleteCategory');
       await categoryController.deleteCategory(categoryMock.id);
       expect(spy).toBeCalledWith(categoryMock.id);
+    });
+  });
+  describe('editCategory method', () => {
+    it('should return category in update category', async () => {
+      const result = await categoryController.editCategory(
+        categoryMock.id,
+        updateCategoryMock,
+      );
+
+      expect(result).toEqual(categoryMock);
+    });
+    it('should send category id and body', async () => {
+      const spy = jest.spyOn(categoryService, 'editCategory');
+      await categoryController.editCategory(
+        categoryMock.id,
+        updateCategoryMock,
+      );
+
+      expect(spy).toBeCalledWith(categoryMock.id, updateCategoryMock);
     });
   });
 });

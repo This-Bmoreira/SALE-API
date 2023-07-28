@@ -8,6 +8,7 @@ import { ProductService } from '../product/product.service';
 import { ReturnCategory } from './DTO/return-category.dto';
 import { categoryMock } from './__mocks__/category.mock';
 import { createCategoryMock } from './__mocks__/create-category.mock';
+import { updateCategoryMock } from './__mocks__/update-category.mock';
 import { CategoryService } from './category.service';
 import { CategoryEntity } from './entity/category.entity';
 
@@ -33,7 +34,7 @@ describe('CategoryService', () => {
           useValue: {
             save: jest.fn().mockResolvedValue(categoryMock),
             find: jest.fn(),
-            findOne: jest.fn(),
+            findOne: jest.fn().mockResolvedValue(categoryMock),
             delete: jest.fn(),
           },
         },
@@ -126,13 +127,33 @@ describe('CategoryService', () => {
   });
   describe('delete categories', () => {
     it('should sand realation in request find Onde', async () => {
-      const spy = jest
+      jest
         .spyOn(categoryRepository, 'findOne')
         .mockResolvedValue({ ...categoryMock, products: [productMock] });
 
       expect(
         categoryService.deleteCategory(categoryMock.id),
       ).rejects.toThrowError(BadRequestException);
+    });
+  });
+
+  describe('editCategory categories', () => {
+    it('should  return category in updadte category', async () => {
+      const spy = jest.spyOn(categoryRepository, 'findOne');
+      const result = await categoryService.editCategory(
+        categoryMock.id,
+        updateCategoryMock,
+      );
+      expect(result).toEqual(categoryMock);
+      expect(spy.mock.calls.length > 0).toEqual(true);
+    });
+    it('should send new category to save', async () => {
+      const spy = jest.spyOn(categoryRepository, 'save');
+      await categoryService.editCategory(categoryMock.id, updateCategoryMock);
+      expect(spy).toBeCalledWith({
+        ...categoryMock,
+        ...updateCategoryMock,
+      });
     });
   });
 });
