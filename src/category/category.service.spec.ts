@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { countProductMock } from '../product/__mocks__/count-product.mock';
+import { productMock } from '../product/__mocks__/product.mock';
 import { ProductService } from '../product/product.service';
 import { ReturnCategory } from './DTO/return-category.dto';
 import { categoryMock } from './__mocks__/category.mock';
@@ -33,6 +34,7 @@ describe('CategoryService', () => {
             save: jest.fn().mockResolvedValue(categoryMock),
             find: jest.fn(),
             findOne: jest.fn(),
+            delete: jest.fn(),
           },
         },
       ],
@@ -120,6 +122,17 @@ describe('CategoryService', () => {
       jest.spyOn(categoryRepository, 'save').mockRejectedValue(new Error());
       const result = categoryService.createCategory(createCategoryMock);
       await expect(result).rejects.toThrow();
+    });
+  });
+  describe('delete categories', () => {
+    it('should sand realation in request find Onde', async () => {
+      const spy = jest
+        .spyOn(categoryRepository, 'findOne')
+        .mockResolvedValue({ ...categoryMock, products: [productMock] });
+
+      expect(
+        categoryService.deleteCategory(categoryMock.id),
+      ).rejects.toThrowError(BadRequestException);
     });
   });
 });

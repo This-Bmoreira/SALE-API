@@ -88,9 +88,7 @@ export class CategoryService {
       where: {
         id,
       },
-      relations: {
-        products: true,
-      },
+      relations,
     });
 
     if (!category) {

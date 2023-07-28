@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { returnDeleteMock } from '../product/__mocks__/return-delete.mock';
 import { categoryMock } from './__mocks__/category.mock';
 import { createCategoryMock } from './__mocks__/create-category.mock';
 import { CategoryController } from './category.controller';
@@ -16,6 +17,7 @@ describe('CategoryController', () => {
           useValue: {
             getAllCategories: jest.fn().mockResolvedValue([categoryMock]),
             createCategory: jest.fn().mockResolvedValue(categoryMock),
+            deleteCategory: jest.fn().mockResolvedValue(returnDeleteMock),
           },
         },
       ],
@@ -46,6 +48,17 @@ describe('CategoryController', () => {
       );
 
       expect(resolve).toEqual(categoryMock);
+    });
+  });
+  describe('deleteCategory method', () => {
+    it('should return DeleteResult  ', async () => {
+      const resolve = await categoryController.deleteCategory(categoryMock.id);
+      expect(resolve).toEqual(returnDeleteMock);
+    });
+    it('should send categoryId to deleteCategory   ', async () => {
+      const spy = jest.spyOn(categoryService, 'deleteCategory');
+      await categoryController.deleteCategory(categoryMock.id);
+      expect(spy).toBeCalledWith(categoryMock.id);
     });
   });
 });
