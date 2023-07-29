@@ -1,7 +1,7 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { ILike, In, Repository } from 'typeorm';
 import { categoryMock } from '../category/__mocks__/category.mock';
 import { CategoryService } from '../category/category.service';
 import { CorreiosService } from '../correios/correios.service';
@@ -29,6 +29,7 @@ describe('ProductService', () => {
             save: jest.fn(),
             delete: jest.fn(),
             findOne: jest.fn(),
+            findAndCount: jest.fn().mockResolvedValue([[productMock], 1]),
           },
         },
         {
@@ -178,6 +179,47 @@ describe('ProductService', () => {
       const { id } = productMock;
       const result = productService.updateProduct(updateProductMock, id);
       expect(result).rejects.toThrow();
+    });
+  });
+  describe(' findAllPage Product', () => {
+    it('should return product pagination ', async () => {
+      const spy = jest.spyOn(productRepository, 'findAndCount');
+      const result = await productService.findAllPage();
+      expect(result.data).toEqual([productMock]);
+      expect(result.meta).toEqual({
+        currentPage: 1,
+        itemsPerPage: 10,
+        totalItems: 1,
+        totalPages: 1,
+      });
+      expect(spy.mock.calls[0][0]).toEqual({
+        take: 10,
+        skip: 0,
+      });
+    });
+    it('should return product pagination send size and page ', async () => {
+      const mockSize = 432;
+      const mockPage = 532;
+      const result = await productService.findAllPage(
+        undefined,
+        mockSize,
+        mockPage,
+      );
+      expect(result.data).toEqual([productMock]);
+      expect(result.meta).toEqual({
+        currentPage: mockPage,
+        itemsPerPage: mockSize,
+        totalItems: 1,
+        totalPages: 1,
+      });
+    });
+    it('should return product pagination search ', async () => {
+      const mockSearch = 'mockSearch';
+      const spy = jest.spyOn(productRepository, 'findAndCount');
+      productService.findAllPage(mockSearch);
+      expect(spy.mock.calls[0][0].where).toEqual({
+        name: ILike(`%${mockSearch}%`),
+      });
     });
   });
 });
