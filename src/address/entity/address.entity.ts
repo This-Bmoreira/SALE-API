@@ -3,8 +3,8 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -35,10 +35,10 @@ export class AddressEntity {
   cityId: number;
 
   @CreateDateColumn({ name: 'created_at' })
-  created_at: Date;
+  createdAt: Date;
 
   @UpdateDateColumn({ name: 'updated_at' })
-  updated_at: Date;
+  updatedAt: Date;
 
   @ManyToOne(() => UserEntity, (user) => user.addresses)
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
@@ -48,6 +48,6 @@ export class AddressEntity {
   @JoinColumn({ name: 'city_id', referencedColumnName: 'id' })
   city?: CityEntity;
 
-  @ManyToMany(() => OrderEntity, (order) => order.address)
+  @OneToMany(() => OrderEntity, (order) => order.address)
   orders?: OrderEntity[];
 }

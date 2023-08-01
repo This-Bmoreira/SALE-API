@@ -8,7 +8,7 @@ export const addressMock: AddressEntity = {
   id: 19,
   userId: userEntityMock.id,
   numberAddress: 21,
-  updated_at: new Date(),
-  created_at: new Date(),
+  updatedAt: new Date(),
+  createdAt: new Date(),
   complement: 'any',
 };
