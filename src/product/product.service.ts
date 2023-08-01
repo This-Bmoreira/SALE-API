@@ -141,6 +141,7 @@ export class ProductService {
 
     return this.productRepository.save({ ...product, ...updateProductDTO });
   }
+
   async countProductByCategoryId(): Promise<CountProduct[]> {
     return this.productRepository
       .createQueryBuilder('product')

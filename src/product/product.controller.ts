@@ -10,6 +10,12 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { DeleteResult } from 'typeorm';
 import { Roles } from '../decorator/roles.decorator';
 import { Pagination } from '../dto/pagination.dto';
@@ -21,16 +27,43 @@ import { UpdateProductDTO } from './DTO/update-product.dto';
 import { ProductEntity } from './entity/product.entity';
 import { ProductService } from './product.service';
 
-@Roles(UserType.Root, UserType.Admin, UserType.User)
+@ApiBearerAuth()
+@UsePipes(ValidationPipe)
+@ApiTags('product')
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
+
+  @Roles(UserType.Root, UserType.Admin, UserType.User)
+  @ApiOperation({ summary: 'Get all products (for Root and Admin users)' })
   @Get()
   async getAllProduct(): Promise<ReturnProduct[]> {
     return (await this.productService.getAllProduct([], true)).map(
       (product) => new ReturnProduct(product),
     );
   }
+
+  @ApiOperation({
+    summary: 'Find products with pagination (for Root and Admin users)',
+  })
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    description: 'Search query for product name',
+  })
+  @ApiQuery({
+    name: 'size',
+    required: false,
+    description: 'Number of items per page',
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number',
+    type: Number,
+  })
+  @Roles(UserType.Admin, UserType.Root, UserType.User)
   @Get('page')
   async findAllPage(
     @Query('search') search?: string,
@@ -39,7 +72,8 @@ export class ProductController {
   ): Promise<Pagination<ProductEntity[]>> {
     return await this.productService.findAllPage(search, size, page);
   }
-  @UsePipes(ValidationPipe)
+
+  @ApiOperation({ summary: 'Create a new product (for Root and Admin)' })
   @Roles(UserType.Root, UserType.Admin)
   @Post()
   async createProduct(
@@ -47,14 +81,15 @@ export class ProductController {
   ): Promise<ProductEntity> {
     return this.productService.createProduct(createProduct);
   }
-  @UsePipes(ValidationPipe)
+
+  @ApiOperation({ summary: 'Delete a product (for Root and Admin )' })
   @Roles(UserType.Root, UserType.Admin)
   @Delete(':id')
   async deleteProduct(@Param('id') id: number): Promise<DeleteResult> {
     return this.productService.deleteProduct(id);
   }
 
-  @UsePipes(ValidationPipe)
+  @ApiOperation({ summary: 'Update a product (for Root and Admin )' })
   @Roles(UserType.Root, UserType.Admin)
   @Put(':id')
   async updateProduct(
@@ -64,7 +99,7 @@ export class ProductController {
     return this.productService.updateProduct(updateProductDTO, id);
   }
 
-  @UsePipes(ValidationPipe)
+  @ApiOperation({ summary: 'Find product by ID (for Root and Admin users)' })
   @Roles(UserType.Root, UserType.Admin, UserType.User)
   @Get(':productId')
   async findProductById(
@@ -75,6 +110,11 @@ export class ProductController {
     );
   }
 
+  @Roles(UserType.Root, UserType.Admin, UserType.User)
+  @ApiOperation({
+    summary:
+      'Find price delivery for a product by CEP (for Root and Admin users)',
+  })
   @Get('/:idProduct/delivery/:cep')
   async findPriceDelivery(
     @Param('idProduct') idProduct: number,
