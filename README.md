@@ -20,6 +20,12 @@ URL_CEP_CORREIO="http://viacep.com.br/ws/{CEP}/json"
 CEP_COMPANY='01029010'
 ```
 
+## Running  migrate
+
+```bash
+npm run migrate:up
+```
+
 ## Running the app
 
 ```bash
@@ -28,6 +34,20 @@ $ npm run start
 
 # watch mode
 $ npm run dev
+```
+
+## auth login
+
+### root
+
+```txt
+password="111111" email="root@gmail.com"
+```
+
+### user
+
+```txt
+password="111111" email='jd@gmail.com'
 ```
 
 ## Test
