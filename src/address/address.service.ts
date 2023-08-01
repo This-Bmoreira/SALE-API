@@ -25,10 +25,10 @@ export class AddressService {
       userId,
     });
   }
-  async getAddressById(id: number): Promise<AddressEntity[]> {
-    const address = await this.addressRepository.find({
+  async getAddressById(userId: number): Promise<AddressEntity[]> {
+    const addresses = await this.addressRepository.find({
       where: {
-        id,
+        userId,
       },
       relations: {
         city: {
@@ -36,9 +36,11 @@ export class AddressService {
         },
       },
     });
-    if (!address || address.length === 0) {
-      throw new NotFoundException('Address not found');
+
+    if (!addresses || addresses.length === 0) {
+      throw new NotFoundException(`Address not found for userId: ${userId}`);
     }
-    return address;
+
+    return addresses;
   }
 }
